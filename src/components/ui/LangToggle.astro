@@ -1,0 +1,52 @@
+---
+import { getAlternateLocale, getLocalePath } from '../../i18n';
+import type { Locale } from '../../i18n';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+const alternate = getAlternateLocale(locale);
+
+// Build the equivalent path in the alternate language
+const pathWithoutLocalePrefix = currentPath.startsWith('/es')
+  ? currentPath.slice(3) || '/'
+  : currentPath;
+const alternatePath = getLocalePath(alternate, pathWithoutLocalePrefix);
+---
+
+<a
+  href={alternatePath}
+  class="lang-btn"
+  aria-label={`Switch to ${alternate === 'en' ? 'English' : 'Español'}`}
+  hreflang={alternate}
+>
+  {alternate === 'es' ? 'ES' : 'EN'}
+</a>
+
+<style>
+  .lang-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2rem;
+    padding: 0 0.5rem;
+    border-radius: 0.375rem;
+    border: 1px solid var(--color-border);
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    color: var(--color-text-muted);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
+  }
+
+  .lang-btn:hover {
+    color: var(--color-text);
+    background-color: var(--color-bg-secondary);
+    border-color: var(--color-accent);
+  }
+</style>

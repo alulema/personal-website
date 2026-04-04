@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations } from '../../i18n';
+
+const locale = 'es';
+const t = useTranslations(locale);
+---
+
+<BaseLayout title={t.now.title} description={t.now.subtitle} locale={locale}>
+  <section class="section">
+    <div class="container">
+      <h1>{t.now.title}</h1>
+      <p class="page-subtitle">{t.now.subtitle}</p>
+      <p style="color: var(--color-text-muted); font-family: var(--font-mono); font-size: 0.875rem;">— Próximamente —</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 0 0 0.75rem;
+  }
+  .page-subtitle {
+    color: var(--color-text-muted);
+    font-size: 1.125rem;
+    max-width: 40rem;
+    margin: 0 0 3rem;
+  }
+</style>

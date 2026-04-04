@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+/* ─── Design Tokens ────────────────────────────────────────────────────── */
+:root {
+  /* Colors - Dark theme (default) */
+  --color-bg:          #0a0f1e;
+  --color-bg-secondary:#111827;
+  --color-bg-card:     #0f172a;
+  --color-border:      rgba(255, 255, 255, 0.08);
+  --color-text:        #e2e8f0;
+  --color-text-muted:  #94a3b8;
+  --color-accent:      #38bdf8;
+  --color-accent-hover:#7dd3fc;
+  --color-accent-2:    #818cf8;
+  --color-accent-2-hover: #a5b4fc;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Spacing scale */
+  --space-section: 5rem;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+}
+
+[data-theme="light"] {
+  --color-bg:          #f8fafc;
+  --color-bg-secondary:#f1f5f9;
+  --color-bg-card:     #ffffff;
+  --color-border:      rgba(0, 0, 0, 0.08);
+  --color-text:        #0f172a;
+  --color-text-muted:  #64748b;
+  --color-accent:      #0284c7;
+  --color-accent-hover:#0369a1;
+  --color-accent-2:    #4f46e5;
+  --color-accent-2-hover: #4338ca;
+}
+
+/* ─── Base ─────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  line-height: 1.7;
+  transition: background-color var(--transition-base), color var(--transition-base);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Typography ────────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-accent-hover);
+}
+
+code, pre {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+pre {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  overflow-x: auto;
+}
+
+/* ─── Utility: Card ─────────────────────────────────────────────────────── */
+.card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.card:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+/* ─── Utility: Section ──────────────────────────────────────────────────── */
+.section {
+  padding-top: var(--space-section);
+  padding-bottom: var(--space-section);
+}
+
+.container {
+  max-width: 64rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+/* ─── Utility: Badge ────────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  background-color: var(--color-bg-secondary);
+}
+
+/* ─── Status indicators (demo gallery) ─────────────────────────────────── */
+.status-active  { color: #4ade80; }
+.status-offline { color: var(--color-text-muted); }
+.status-pending { color: #fbbf24; }
+
+/* ─── Focus visible ─────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ─── Scrollbar (dark) ──────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--color-bg); }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }
