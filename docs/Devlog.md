@@ -280,12 +280,65 @@ SSH key: ~/.ssh/github (con config entry en ~/.ssh/config)
 
 ---
 
+## Fase 7 — Backend Azure Functions (2026-04-05)
+
+### Decisiones
+
+| Decisión | Por qué |
+|---|---|
+| **Azure Functions v2 Python** (un solo `function_app.py`) | Modelo moderno, un solo entry point, sin archivos `function.json` por función |
+| **Pydantic** para validación de payloads | Type-safe, mensajes de error claros, integra bien con Python 3.10+ |
+| **JWT HS256** para tokens de aprobación | Stateless, firmado con `JWT_SECRET`, expira en 24h. El admin solo necesita hacer clic en el link |
+| **Azure Table Storage** para tickets | Serverless, sin base de datos, costo casi cero, suficiente para este volumen |
+| **Timer trigger cada 5 min** | Limpia sesiones expiradas y escala Container Apps a 0 sin necesidad de scheduler externo |
+| **CORS headers explícitos** | Solo permite origen `alexisalulema.com` en producción |
+
+### Lo construido
+
+`api/` — Azure Functions backend:
+- `function_app.py`: entry point con todos los endpoints y el timer trigger
+- `shared/turnstile.py`: verificación server-side de Cloudflare Turnstile via `httpx`
+- `shared/email_sender.py`: wrapper de Azure Communication Services Email para 3 tipos de email
+- `shared/demo_store.py`: operaciones sobre Azure Table Storage (crear ticket, activar, consultar estado)
+- `requirements.txt`: dependencias (azure-functions, azure-communication-email, azure-data-tables, azure-mgmt-appcontainers, pyjwt, pydantic, httpx)
+- `host.json`: config de Azure Functions v2, `routePrefix: "api"`
+- `local.settings.json.example`: todas las variables de entorno para desarrollo local
+
+### Endpoints
+
+| Método | Ruta | Descripción |
+|---|---|---|
+| `POST` | `/api/contact` | Verifica Turnstile → envía email al admin |
+| `POST` | `/api/demo/request` | Crea ticket en Table Storage → email al admin con 3 links de aprobación (30min/1h/2h) |
+| `GET` | `/api/demo/approve/{token}` | Verifica JWT → escala Container App a 1 réplica → activa ticket → email al usuario con link de acceso |
+| `GET` | `/api/demo/status/{id}` | Consulta estado del demo (active/pending/offline) desde Table Storage |
+| Timer | cada 5 min | Expira tickets vencidos → escala Container Apps a 0 réplicas |
+
+### Flujo completo de demo on-demand
+
+```
+Usuario → POST /api/demo/request
+  → Ticket creado en Table Storage (status: pending)
+  → Email al admin con links de aprobación firmados con JWT (24h TTL)
+
+Admin hace clic en link → GET /api/demo/approve/{token}
+  → JWT verificado (sub, exp, projectId, durationMinutes)
+  → Container App escalado a min_replicas=1 (via azure-mgmt-appcontainers)
+  → Ticket activado con expiresAt
+  → Email al usuario con link de acceso
+  → Página HTML de confirmación al admin
+
+Timer (cada 5 min) → expira tickets vencidos → Container Apps a 0
+```
+
+---
+
 ## Pendiente (próximas fases)
 
 | Fase | Contenido |
 |---|---|
 | ~~**6**~~ | ~~SEO: sitemap, robots.txt, Open Graph images, hreflang~~ ✓ |
-| **7** | Backend FastAPI: demo on-demand + formulario de contacto (Azure Functions) |
+| ~~**7**~~ | ~~Backend FastAPI: demo on-demand + formulario de contacto (Azure Functions)~~ ✓ |
 | **8** | Autenticación: Microsoft Entra ID para Keystatic admin en producción |
 | **9** | Deploy: Azure Static Web Apps + CI/CD GitHub Actions + headers de seguridad |
 | **Migración** | Importar posts del blog actual de WordPress |

@@ -1,0 +1,26 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+
+    "TURNSTILE_SECRET_KEY": "your-cloudflare-turnstile-secret-key",
+    "CONTACT_DESTINATION_EMAIL": "contact@alexisalulema.com",
+    "AZURE_COMMUNICATION_CONNECTION_STRING": "endpoint=https://your-resource.communication.azure.com/;accesskey=xxx",
+    "AZURE_COMMUNICATION_SENDER_ADDRESS": "DoNotReply@your-domain.azurecomm.net",
+
+    "JWT_SECRET": "your-random-secret-min-32-chars",
+    "ADMIN_EMAIL": "contact@alexisalulema.com",
+    "SITE_BASE_URL": "https://alexisalulema.com",
+
+    "AZURE_STORAGE_CONNECTION_STRING": "DefaultEndpointsProtocol=https;AccountName=xxx;AccountKey=xxx",
+    "DEMO_TABLE_NAME": "demotickets",
+
+    "AZURE_SUBSCRIPTION_ID": "your-subscription-id",
+    "AZURE_RESOURCE_GROUP": "rg-alexisalulema",
+    "CONTAINER_APP_NAME_RAG": "demo-rag-demo",
+    "CONTAINER_APP_NAME_BERT": "demo-bert-classifier",
+    "CONTAINER_APP_NAME_MULTIAGENT": "demo-agent-ai",
+    "CONTAINER_APP_NAME_FASTAPI": "demo-fastapi-patterns"
+  }
+}
