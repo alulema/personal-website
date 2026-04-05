@@ -4,14 +4,75 @@ import { useTranslations } from '../../i18n';
 
 const locale = 'es';
 const t = useTranslations(locale);
+
+const education = [
+  {
+    degree: 'MS Computer Engineering (IoT)',
+    institution: 'University of New Mexico',
+    location: 'Albuquerque, NM, EE.UU.',
+  },
+  {
+    degree: 'Ingeniería en Electrónica',
+    institution: 'ESPE',
+    location: 'Quito, Ecuador',
+  },
+];
 ---
 
-<BaseLayout title={t.teaching.title} description={t.teaching.subtitle} locale={locale}>
+<BaseLayout title="Docencia" description="Alexis Alulema como Profesor Colaborador en la Universitat Oberta de Catalunya (UOC)." locale={locale}>
   <section class="section">
     <div class="container">
-      <h1>{t.teaching.title}</h1>
-      <p class="page-subtitle">{t.teaching.subtitle}</p>
-      <p style="color: var(--color-text-muted); font-family: var(--font-mono); font-size: 0.875rem;">— Próximamente —</p>
+      <h1>Docencia</h1>
+      <p class="page-subtitle">Conectando la práctica de la industria con la educación académica para la próxima generación de ingenieros de software.</p>
+
+      <div class="institution-card card">
+        <div class="institution-marker"></div>
+        <div class="institution-body">
+          <div class="institution-meta">
+            <span class="badge">2025 &ndash; Presente</span>
+            <span class="badge badge-accent">Tiempo parcial</span>
+          </div>
+          <h2 class="institution-role">Profesor Colaborador</h2>
+          <p class="institution-name">Universitat Oberta de Catalunya (UOC)</p>
+          <p class="institution-location">Barcelona, España</p>
+          <p class="institution-desc">
+            Ayudando a estudiantes de máster a conectar los conceptos teóricos con la práctica
+            profesional real en ingeniería de software. Los cursos se enfocan en arquitectura
+            de software aplicada, prácticas modernas de desarrollo y los desafíos prácticos
+            que los ingenieros enfrentan en entornos de producción.
+          </p>
+        </div>
+      </div>
+
+      <div class="philosophy-section">
+        <h2 class="section-heading">Filosofía de enseñanza</h2>
+        <blockquote class="philosophy-quote card">
+          <p>
+            La educación en ingeniería debe cerrar la brecha entre la teoría académica y la
+            realidad de producción. Llevo la experiencia directa de la industria adquirida
+            trabajando en Microsoft y construyendo sistemas a escala empresarial a las
+            discusiones del aula &mdash; no solo diapositivas, sino decisiones reales,
+            compromisos reales y restricciones reales.
+          </p>
+          <p>
+            El objetivo no es enseñar a los estudiantes a pasar exámenes, sino ayudarlos a
+            pensar como ingenieros que entregan código que importa.
+          </p>
+        </blockquote>
+      </div>
+
+      <div class="education-section">
+        <h2 class="section-heading">Formación académica</h2>
+        <div class="education-grid">
+          {education.map((item) => (
+            <div class="education-card card">
+              <p class="edu-degree">{item.degree}</p>
+              <p class="edu-institution">{item.institution}</p>
+              <p class="edu-location">{item.location}</p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -23,10 +84,132 @@ const t = useTranslations(locale);
     letter-spacing: -0.03em;
     margin: 0 0 0.75rem;
   }
+
   .page-subtitle {
     color: var(--color-text-muted);
     font-size: 1.125rem;
     max-width: 40rem;
     margin: 0 0 3rem;
+  }
+
+  .institution-card {
+    display: flex;
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+    margin-bottom: 3rem;
+  }
+
+  .institution-marker {
+    width: 4px;
+    background: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .institution-body {
+    padding: 2rem;
+    flex: 1;
+  }
+
+  .institution-meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.875rem;
+  }
+
+  .badge-accent {
+    background: var(--color-accent);
+    color: var(--color-bg);
+    font-weight: 700;
+  }
+
+  .institution-role {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem;
+    color: var(--color-text);
+  }
+
+  .institution-name {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--color-accent);
+    margin: 0 0 0.2rem;
+  }
+
+  .institution-location {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin: 0 0 1.25rem;
+  }
+
+  .institution-desc {
+    color: var(--color-text-muted);
+    line-height: 1.75;
+    max-width: 65ch;
+    margin: 0;
+  }
+
+  .philosophy-section {
+    margin-bottom: 3rem;
+  }
+
+  .section-heading {
+    font-size: 1.375rem;
+    font-weight: 700;
+    margin: 0 0 1.25rem;
+    color: var(--color-text);
+  }
+
+  .philosophy-quote {
+    border-left: 4px solid var(--color-accent);
+    padding: 1.5rem 2rem;
+  }
+
+  .philosophy-quote p {
+    color: var(--color-text-muted);
+    line-height: 1.8;
+    max-width: 65ch;
+    margin: 0 0 1rem;
+    font-size: 1.0625rem;
+  }
+
+  .philosophy-quote p:last-child {
+    margin-bottom: 0;
+  }
+
+  .education-section {
+    margin-bottom: 1rem;
+  }
+
+  .education-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+    gap: 1rem;
+  }
+
+  .education-card {
+    padding: 1.5rem;
+  }
+
+  .edu-degree {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--color-text);
+    margin: 0 0 0.375rem;
+  }
+
+  .edu-institution {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--color-accent);
+    margin: 0 0 0.25rem;
+  }
+
+  .edu-location {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    margin: 0;
   }
 </style>

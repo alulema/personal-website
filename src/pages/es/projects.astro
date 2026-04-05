@@ -1,23 +1,113 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import DemoRequestModal from '../../components/DemoRequestModal';
 import { useTranslations } from '../../i18n';
+import { projects, categoryLabels } from '../../data/projects';
+import type { ProjectCategory } from '../../data/projects';
 
 const locale = 'es';
 const t = useTranslations(locale);
+
+const categories = [...new Set(projects.map(p => p.category))] as ProjectCategory[];
 ---
 
 <BaseLayout title={t.projects.title} description={t.projects.subtitle} locale={locale}>
   <section class="section">
     <div class="container">
-      <h1>{t.projects.title}</h1>
+      <h1 class="page-title">{t.projects.title}</h1>
       <p class="page-subtitle">{t.projects.subtitle}</p>
-      <p style="color: var(--color-text-muted); font-family: var(--font-mono); font-size: 0.875rem;">— Próximamente —</p>
+
+      <div class="filter-bar" role="group" aria-label="Filtrar por categoría">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        {categories.map(cat => (
+          <button class="filter-btn" data-filter={cat}>
+            {categoryLabels[cat].es}
+          </button>
+        ))}
+      </div>
+
+      <div class="projects-grid">
+        {projects.map(project => (
+          <div class="project-item" data-category={project.category}>
+            <ProjectCard project={project} locale={locale} />
+          </div>
+        ))}
+      </div>
     </div>
   </section>
+
+  <DemoRequestModal locale={locale} client:load />
 </BaseLayout>
 
+<script>
+  const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const items = document.querySelectorAll<HTMLElement>('.project-item');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      items.forEach(item => {
+        item.hidden = filter !== 'all' && item.dataset.category !== filter;
+      });
+    });
+  });
+
+  async function refreshStatuses() {
+    const cards = document.querySelectorAll<HTMLElement>('[data-project-id]');
+    for (const card of cards) {
+      const id = card.dataset.projectId;
+      if (!id) continue;
+      try {
+        const res = await fetch(`/api/demo/status/${id}`);
+        if (!res.ok) continue;
+        const { status, expiresAt } = await res.json() as { status: string; expiresAt?: string };
+        updateCardStatus(card, status, expiresAt);
+      } catch { /* API no desplegada aún */ }
+    }
+  }
+
+  function updateCardStatus(card: HTMLElement, status: string, expiresAt?: string) {
+    const badge   = card.querySelector<HTMLElement>('.status-badge');
+    const label   = card.querySelector<HTMLElement>('.status-label');
+    const offline = card.querySelector<HTMLElement>('.cta-offline');
+    const pending = card.querySelector<HTMLElement>('.cta-pending');
+    const active  = card.querySelectorAll<HTMLElement>('.cta-active');
+    const timer   = card.querySelector<HTMLElement>('.demo-timer');
+    if (!badge || !label) return;
+    badge.dataset.status = status;
+    const labels: Record<string,string> = { offline:'Apagado', pending:'Pendiente', active:'Activo' };
+    label.textContent = labels[status] ?? status;
+    if (offline) offline.hidden = status !== 'offline';
+    if (pending) pending.hidden = status !== 'pending';
+    active.forEach(el => el.hidden = status !== 'active');
+    if (status === 'active' && expiresAt && timer) {
+      const tick = () => {
+        const diff = new Date(expiresAt).getTime() - Date.now();
+        if (diff <= 0) { timer.textContent = 'Expirado'; return; }
+        const m = Math.floor(diff/60000), s = Math.floor((diff%60000)/1000);
+        timer.textContent = `${m}m ${s}s restantes`;
+        setTimeout(tick, 1000);
+      };
+      tick();
+    }
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('.btn-request').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id    = btn.dataset.projectId    ?? '';
+      const title = btn.dataset.projectTitle ?? '';
+      window.dispatchEvent(new CustomEvent('open-demo-request', { detail: { id, title } }));
+    });
+  });
+
+  refreshStatuses();
+</script>
+
 <style>
-  h1 {
+  .page-title {
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 800;
     letter-spacing: -0.03em;
@@ -27,6 +117,33 @@ const t = useTranslations(locale);
     color: var(--color-text-muted);
     font-size: 1.125rem;
     max-width: 40rem;
-    margin: 0 0 3rem;
+    margin: 0 0 2rem;
+  }
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .filter-btn {
+    padding: 0.375rem 0.875rem;
+    border-radius: 9999px;
+    border: 1px solid var(--color-border);
+    background: none;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+  .filter-btn:hover,
+  .filter-btn.active {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  }
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+    gap: 1.5rem;
   }
 </style>

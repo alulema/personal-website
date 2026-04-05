@@ -4,14 +4,60 @@ import { useTranslations } from '../i18n';
 
 const locale = 'en';
 const t = useTranslations(locale);
+
+const nowSections = [
+  {
+    emoji: '💼',
+    title: 'At work',
+    content: `Software Engineer at Microsoft — working on AI-driven data pipelines using Azure Databricks and Microsoft Fabric for the M365 ecosystem. Recently participated in the Internal Global Hackathon 2025, building an AI agent with Semantic Kernel and Azure AI Search.`,
+  },
+  {
+    emoji: '🎓',
+    title: 'Teaching',
+    content: `Collaborating as professor at UOC (Universitat Oberta de Catalunya) for master's students in Spain, helping them bridge theoretical software engineering concepts with real-world practice.`,
+  },
+  {
+    emoji: '🔨',
+    title: 'Building',
+    content: `This personal website — redesigning from WordPress to Astro + Azure. Leaning into static generation, Cloudflare, and clean content architecture.`,
+  },
+  {
+    emoji: '📚',
+    title: 'Learning',
+    content: `Going deeper into LLMOps: fine-tuning with LoRA/PEFT, LangSmith for tracing, and multi-agent coordination patterns. Particularly interested in how agent systems fail gracefully in production.`,
+  },
+  {
+    emoji: '🔭',
+    title: 'Reading & following',
+    content: `Keeping up with the latest in agent frameworks and RAG architectures. Following the evolving space of LLM evaluation, observability tooling, and how teams are actually shipping AI products.`,
+  },
+];
 ---
 
-<BaseLayout title={t.now.title} description={t.now.subtitle} locale={locale}>
+<BaseLayout title="Now" description="What Alexis Alulema is currently focused on — April 2026." locale={locale}>
   <section class="section">
     <div class="container">
-      <h1>{t.now.title}</h1>
-      <p class="page-subtitle">{t.now.subtitle}</p>
-      <p style="color: var(--color-text-muted); font-family: var(--font-mono); font-size: 0.875rem;">— Coming soon —</p>
+      <h1>Now</h1>
+      <p class="page-intro">
+        This is a <a href="https://nownownow.com/about" target="_blank" rel="noopener noreferrer" class="now-link">now page</a>.
+        A snapshot of what I&rsquo;m focused on right now &mdash; updated when things change.
+      </p>
+      <p class="last-updated">Last updated: April 2026</p>
+
+      <div class="now-sections">
+        {nowSections.map((item) => (
+          <div class="now-card card">
+            <div class="now-marker"></div>
+            <div class="now-body">
+              <h2 class="now-title">
+                <span class="now-emoji" aria-hidden="true">{item.emoji}</span>
+                {item.title}
+              </h2>
+              <p class="now-content">{item.content}</p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -23,10 +69,77 @@ const t = useTranslations(locale);
     letter-spacing: -0.03em;
     margin: 0 0 0.75rem;
   }
-  .page-subtitle {
+
+  .page-intro {
     color: var(--color-text-muted);
     font-size: 1.125rem;
-    max-width: 40rem;
+    max-width: 44rem;
+    line-height: 1.7;
+    margin: 0 0 0.75rem;
+  }
+
+  .now-link {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: opacity 0.15s ease;
+  }
+
+  .now-link:hover {
+    opacity: 0.75;
+  }
+
+  .last-updated {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
     margin: 0 0 3rem;
+  }
+
+  .now-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .now-card {
+    display: flex;
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .now-marker {
+    width: 4px;
+    background: var(--color-accent);
+    opacity: 0.5;
+    flex-shrink: 0;
+  }
+
+  .now-body {
+    padding: 1.5rem 1.75rem;
+    flex: 1;
+  }
+
+  .now-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .now-emoji {
+    font-size: 1.125rem;
+    line-height: 1;
+  }
+
+  .now-content {
+    color: var(--color-text-muted);
+    line-height: 1.75;
+    max-width: 65ch;
+    margin: 0;
   }
 </style>

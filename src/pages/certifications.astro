@@ -4,14 +4,33 @@ import { useTranslations } from '../i18n';
 
 const locale = 'en';
 const t = useTranslations(locale);
+
+const certs = [
+  { name: 'GitHub Copilot', issuer: 'GitHub', date: 'Jan 2026', color: '#238636' },
+  { name: 'Microsoft Azure AI Fundamentals', issuer: 'Microsoft', date: 'Jun 2025', color: '#0078d4' },
+  { name: 'Microsoft Azure Data Fundamentals', issuer: 'Microsoft', date: 'Jul 2025', color: '#0078d4' },
+  { name: 'Microsoft Azure Fundamentals', issuer: 'Microsoft', date: 'Apr 2025', color: '#0078d4' },
+  { name: 'Professional Certificate in LLMs', issuer: 'Databricks', date: 'Jan 2024', color: '#ff3621' },
+  { name: 'Generative AI with LLMs', issuer: 'Coursera / DeepLearning.AI', date: 'Nov 2023', color: '#0056d2' },
+  { name: 'AWS Certified Cloud Practitioner', issuer: 'Amazon Web Services', date: 'Jul 2022', color: '#ff9900' },
+];
 ---
 
-<BaseLayout title={t.certifications.title} description={t.certifications.subtitle} locale={locale}>
+<BaseLayout title="Certifications" description="Professional credentials and continuous learning by Alexis Alulema." locale={locale}>
   <section class="section">
     <div class="container">
-      <h1>{t.certifications.title}</h1>
-      <p class="page-subtitle">{t.certifications.subtitle}</p>
-      <p style="color: var(--color-text-muted); font-family: var(--font-mono); font-size: 0.875rem;">— Coming soon —</p>
+      <h1>Certifications</h1>
+      <p class="page-subtitle">Professional credentials and continuous learning.</p>
+
+      <div class="certs-grid">
+        {certs.map((cert) => (
+          <div class="cert-card card" style={`border-left: 4px solid ${cert.color};`}>
+            <p class="cert-name">{cert.name}</p>
+            <p class="cert-issuer">{cert.issuer}</p>
+            <span class="badge cert-date">{cert.date}</span>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -23,10 +42,57 @@ const t = useTranslations(locale);
     letter-spacing: -0.03em;
     margin: 0 0 0.75rem;
   }
+
   .page-subtitle {
     color: var(--color-text-muted);
     font-size: 1.125rem;
     max-width: 40rem;
     margin: 0 0 3rem;
+  }
+
+  .certs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 900px) {
+    .certs-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .certs-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .cert-card {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .cert-name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--color-text);
+    margin: 0;
+    line-height: 1.35;
+  }
+
+  .cert-issuer {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .cert-date {
+    align-self: flex-start;
+    margin-top: auto;
+    padding-top: 0.75rem;
   }
 </style>

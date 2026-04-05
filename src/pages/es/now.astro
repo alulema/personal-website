@@ -4,14 +4,60 @@ import { useTranslations } from '../../i18n';
 
 const locale = 'es';
 const t = useTranslations(locale);
+
+const nowSections = [
+  {
+    emoji: '💼',
+    title: 'En el trabajo',
+    content: `Ingeniero de Software en Microsoft — trabajando en pipelines de datos impulsados por IA usando Azure Databricks y Microsoft Fabric para el ecosistema M365. Recientemente participé en el Hackathon Global Interno 2025, construyendo un agente de IA con Semantic Kernel y Azure AI Search.`,
+  },
+  {
+    emoji: '🎓',
+    title: 'Docencia',
+    content: `Colaborando como profesor en la UOC (Universitat Oberta de Catalunya) para estudiantes de máster en España, ayudándoles a conectar los conceptos teóricos de ingeniería de software con la práctica real.`,
+  },
+  {
+    emoji: '🔨',
+    title: 'Construyendo',
+    content: `Este sitio web personal — rediseñando desde WordPress a Astro + Azure. Apostando por la generación estática, Cloudflare y una arquitectura de contenido limpia.`,
+  },
+  {
+    emoji: '📚',
+    title: 'Aprendiendo',
+    content: `Profundizando en LLMOps: fine-tuning con LoRA/PEFT, LangSmith para trazabilidad y patrones de coordinación multi-agente. Particularmente interesado en cómo los sistemas de agentes fallan de forma controlada en producción.`,
+  },
+  {
+    emoji: '🔭',
+    title: 'Leyendo y siguiendo',
+    content: `Siguiendo lo último en frameworks de agentes y arquitecturas RAG. Pendiente del espacio en evolución de evaluación de LLMs, herramientas de observabilidad y cómo los equipos realmente están lanzando productos de IA.`,
+  },
+];
 ---
 
-<BaseLayout title={t.now.title} description={t.now.subtitle} locale={locale}>
+<BaseLayout title="Ahora" description="En qué está enfocado Alexis Alulema actualmente — Abril 2026." locale={locale}>
   <section class="section">
     <div class="container">
-      <h1>{t.now.title}</h1>
-      <p class="page-subtitle">{t.now.subtitle}</p>
-      <p style="color: var(--color-text-muted); font-family: var(--font-mono); font-size: 0.875rem;">— Próximamente —</p>
+      <h1>Ahora</h1>
+      <p class="page-intro">
+        Esta es una <a href="https://nownownow.com/about" target="_blank" rel="noopener noreferrer" class="now-link">página &lsquo;now&rsquo;</a>.
+        Una instantánea de en qué estoy enfocado ahora mismo &mdash; se actualiza cuando las cosas cambian.
+      </p>
+      <p class="last-updated">Última actualización: Abril 2026</p>
+
+      <div class="now-sections">
+        {nowSections.map((item) => (
+          <div class="now-card card">
+            <div class="now-marker"></div>
+            <div class="now-body">
+              <h2 class="now-title">
+                <span class="now-emoji" aria-hidden="true">{item.emoji}</span>
+                {item.title}
+              </h2>
+              <p class="now-content">{item.content}</p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -23,10 +69,77 @@ const t = useTranslations(locale);
     letter-spacing: -0.03em;
     margin: 0 0 0.75rem;
   }
-  .page-subtitle {
+
+  .page-intro {
     color: var(--color-text-muted);
     font-size: 1.125rem;
-    max-width: 40rem;
+    max-width: 44rem;
+    line-height: 1.7;
+    margin: 0 0 0.75rem;
+  }
+
+  .now-link {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: opacity 0.15s ease;
+  }
+
+  .now-link:hover {
+    opacity: 0.75;
+  }
+
+  .last-updated {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
     margin: 0 0 3rem;
+  }
+
+  .now-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .now-card {
+    display: flex;
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .now-marker {
+    width: 4px;
+    background: var(--color-accent);
+    opacity: 0.5;
+    flex-shrink: 0;
+  }
+
+  .now-body {
+    padding: 1.5rem 1.75rem;
+    flex: 1;
+  }
+
+  .now-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .now-emoji {
+    font-size: 1.125rem;
+    line-height: 1;
+  }
+
+  .now-content {
+    color: var(--color-text-muted);
+    line-height: 1.75;
+    max-width: 65ch;
+    margin: 0;
   }
 </style>

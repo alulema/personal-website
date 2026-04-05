@@ -4,14 +4,80 @@ import { useTranslations } from '../i18n';
 
 const locale = 'en';
 const t = useTranslations(locale);
+
+const sections = [
+  {
+    title: 'Daily drivers',
+    items: [
+      { label: 'Editor', value: 'VS Code + Claude Code (CLI)' },
+      { label: 'Terminal', value: 'WSL2 on Windows / zsh' },
+      { label: 'AI Assistants', value: 'Claude Code, GitHub Copilot' },
+      { label: 'Version control', value: 'Git + GitHub CLI (gh)' },
+    ],
+  },
+  {
+    title: 'Languages (daily)',
+    items: [
+      { value: 'Python (FastAPI, PyTorch, LangChain)' },
+      { value: 'TypeScript / Angular' },
+      { value: 'C# / .NET' },
+    ],
+  },
+  {
+    title: 'Cloud & infra',
+    items: [
+      { value: 'Azure — Databricks, Fabric, AI Search, Container Apps, Functions' },
+      { value: 'AWS — Lambda, EventBridge, DynamoDB' },
+      { value: 'Cloudflare — DNS, R2, Turnstile' },
+    ],
+  },
+  {
+    title: 'AI / ML stack',
+    items: [
+      { value: 'LangChain, LangGraph, AutoGen' },
+      { value: 'Semantic Kernel' },
+      { value: 'Pinecone, Azure AI Search' },
+      { value: 'OpenAI API, Azure OpenAI' },
+      { value: 'Hugging Face Transformers' },
+    ],
+  },
+  {
+    title: 'Databases',
+    items: [
+      { value: 'PostgreSQL' },
+      { value: 'SQL Server' },
+      { value: 'Redis' },
+      { value: 'DynamoDB' },
+    ],
+  },
+];
 ---
 
-<BaseLayout title={t.uses.title} description={t.uses.subtitle} locale={locale}>
+<BaseLayout title="Uses" description="The tools and setup Alexis Alulema uses day-to-day." locale={locale}>
   <section class="section">
     <div class="container">
-      <h1>{t.uses.title}</h1>
-      <p class="page-subtitle">{t.uses.subtitle}</p>
-      <p style="color: var(--color-text-muted); font-family: var(--font-mono); font-size: 0.875rem;">— Coming soon —</p>
+      <h1>Uses</h1>
+      <p class="page-subtitle">The tools and setup I use day-to-day. Updated periodically.</p>
+
+      <div class="uses-content">
+        {sections.map((section) => (
+          <div class="uses-section">
+            <h2 class="uses-heading">{section.title}</h2>
+            <div class="uses-items">
+              {section.items.map((item) => (
+                item.label ? (
+                  <div class="uses-item-row">
+                    <span class="item-label">{item.label}</span>
+                    <span class="badge">{item.value}</span>
+                  </div>
+                ) : (
+                  <span class="badge">{item.value}</span>
+                )
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -23,10 +89,60 @@ const t = useTranslations(locale);
     letter-spacing: -0.03em;
     margin: 0 0 0.75rem;
   }
+
   .page-subtitle {
     color: var(--color-text-muted);
     font-size: 1.125rem;
     max-width: 40rem;
     margin: 0 0 3rem;
+  }
+
+  .uses-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .uses-section {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 2.5rem;
+  }
+
+  .uses-section:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .uses-heading {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 1.25rem;
+    font-family: var(--font-mono);
+  }
+
+  .uses-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    align-items: center;
+  }
+
+  .uses-item-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .item-label {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    white-space: nowrap;
+  }
+
+  .badge {
+    font-size: 0.8125rem;
   }
 </style>

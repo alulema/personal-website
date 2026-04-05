@@ -1,32 +1,165 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { useTranslations } from '../../i18n';
 
 const locale = 'es';
-const t = useTranslations(locale);
+const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '1x00000000000000000000AA';
 ---
 
-<BaseLayout title={t.contact.title} description={t.contact.subtitle} locale={locale}>
+<BaseLayout
+  title="Contacto"
+  description="Ponte en contacto con Alexis Alulema."
+  locale={locale}
+>
   <section class="section">
-    <div class="container">
-      <h1>{t.contact.title}</h1>
-      <p class="page-subtitle">{t.contact.subtitle}</p>
-      <p style="color: var(--color-text-muted); font-family: var(--font-mono); font-size: 0.875rem;">— Próximamente —</p>
+    <div class="container contact-layout">
+
+      <div class="contact-info">
+        <p class="eyebrow">Ponte en contacto</p>
+        <h1 class="contact-title">Contacto</h1>
+        <p class="contact-desc">
+          ¿Tienes una pregunta, una idea de proyecto o simplemente quieres saludar? Completa el formulario y te responderé a la brevedad.
+        </p>
+
+        <div class="contact-alts">
+          <p class="alts-label">O encuéntrame en</p>
+          <div class="alts-links">
+            <a href="https://www.linkedin.com/in/alulema" target="_blank" rel="noopener noreferrer" class="alt-link">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              LinkedIn
+            </a>
+            <a href="https://github.com/alulema" target="_blank" rel="noopener noreferrer" class="alt-link">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </div>
+
+        <p class="spam-notice">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Protegido por Cloudflare Turnstile. Tu dirección de correo no está expuesta.
+        </p>
+      </div>
+
+      <div class="contact-form-wrap">
+        <form id="contact-form" class="contact-form card" novalidate>
+          <div class="field">
+            <label for="c-name">Nombre</label>
+            <input id="c-name" name="name" type="text" required autocomplete="name" placeholder="Tu nombre" />
+          </div>
+          <div class="field">
+            <label for="c-email">Correo electrónico</label>
+            <input id="c-email" name="email" type="email" required autocomplete="email" placeholder="tu@correo.com" />
+          </div>
+          <div class="field">
+            <label for="c-subject">Asunto</label>
+            <input id="c-subject" name="subject" type="text" required placeholder="¿De qué se trata?" />
+          </div>
+          <div class="field">
+            <label for="c-message">Mensaje</label>
+            <textarea id="c-message" name="message" rows="5" required placeholder="Tu mensaje…"></textarea>
+          </div>
+
+          <div
+            class="cf-turnstile"
+            data-sitekey={TURNSTILE_SITE_KEY}
+            data-theme="auto"
+            data-language="es"
+          ></div>
+
+          <div id="form-feedback" class="form-feedback" hidden></div>
+
+          <button type="submit" class="btn-submit" id="submit-btn">
+            Enviar mensaje
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </form>
+      </div>
+
     </div>
   </section>
 </BaseLayout>
 
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const feedback = document.getElementById('form-feedback') as HTMLDivElement;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const token = (form.querySelector('[name="cf-turnstile-response"]') as HTMLInputElement)?.value;
+    if (!token) { showFeedback('error', 'Por favor completa el desafío de seguridad.'); return; }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando…';
+
+    const data = {
+      name:    (form.querySelector('#c-name')    as HTMLInputElement).value,
+      email:   (form.querySelector('#c-email')   as HTMLInputElement).value,
+      subject: (form.querySelector('#c-subject') as HTMLInputElement).value,
+      message: (form.querySelector('#c-message') as HTMLTextAreaElement).value,
+      turnstileToken: token,
+    };
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) {
+        showFeedback('success', '¡Mensaje enviado! Te responderé pronto.');
+        form.reset();
+        if (typeof window.turnstile !== 'undefined') window.turnstile.reset();
+      } else {
+        showFeedback('error', 'Algo salió mal. Por favor intenta de nuevo.');
+      }
+    } catch {
+      showFeedback('error', 'Error de red. Por favor intenta de nuevo.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = 'Enviar mensaje <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+    }
+  });
+
+  function showFeedback(type: 'success' | 'error', message: string) {
+    feedback.hidden = false;
+    feedback.className = `form-feedback form-feedback--${type}`;
+    feedback.textContent = message;
+  }
+</script>
+
 <style>
-  h1 {
-    font-size: clamp(2rem, 5vw, 3rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    margin: 0 0 0.75rem;
+  .contact-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    align-items: start;
+    padding-top: 4rem;
+    padding-bottom: 5rem;
   }
-  .page-subtitle {
-    color: var(--color-text-muted);
-    font-size: 1.125rem;
-    max-width: 40rem;
-    margin: 0 0 3rem;
+  @media (min-width: 768px) {
+    .contact-layout { grid-template-columns: 1fr 1.4fr; }
   }
+  .eyebrow { font-size: 0.8125rem; font-family: var(--font-mono); color: var(--color-accent); text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 0.75rem; }
+  .contact-title { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; letter-spacing: -0.03em; margin: 0 0 1rem; }
+  .contact-desc { font-size: 1rem; color: var(--color-text-muted); line-height: 1.7; margin: 0 0 2rem; max-width: 28rem; }
+  .alts-label { font-size: 0.8125rem; font-family: var(--font-mono); color: var(--color-text-muted); margin: 0 0 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .alts-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .alt-link { display: inline-flex; align-items: center; gap: 0.375rem; padding: 0.5rem 1rem; border-radius: 0.5rem; border: 1px solid var(--color-border); color: var(--color-text-muted); font-size: 0.875rem; text-decoration: none; transition: all var(--transition-fast); }
+  .alt-link:hover { border-color: var(--color-accent); color: var(--color-accent); }
+  .spam-notice { display: flex; align-items: center; gap: 0.5rem; margin-top: 2rem; font-size: 0.8125rem; color: var(--color-text-muted); font-family: var(--font-mono); }
+  .contact-form { display: flex; flex-direction: column; gap: 1.25rem; }
+  .field { display: flex; flex-direction: column; gap: 0.375rem; }
+  .field label { font-size: 0.875rem; font-weight: 500; color: var(--color-text); }
+  .field input, .field textarea { background: var(--color-bg-secondary); border: 1px solid var(--color-border); border-radius: 0.5rem; padding: 0.625rem 0.875rem; color: var(--color-text); font-size: 0.9375rem; font-family: var(--font-sans); transition: border-color var(--transition-fast); resize: vertical; width: 100%; }
+  .field input:focus, .field textarea:focus { outline: none; border-color: var(--color-accent); }
+  .field input::placeholder, .field textarea::placeholder { color: var(--color-text-muted); opacity: 0.6; }
+  .form-feedback { padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 0.9rem; }
+  .form-feedback--success { background: color-mix(in srgb, #4ade80 10%, transparent); border: 1px solid #4ade80; color: #4ade80; }
+  .form-feedback--error { background: color-mix(in srgb, #f87171 10%, transparent); border: 1px solid #f87171; color: #f87171; }
+  .btn-submit { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.5rem; border-radius: 0.5rem; background-color: var(--color-accent); color: #0a0f1e; font-weight: 600; font-size: 0.9375rem; border: none; cursor: pointer; transition: background-color var(--transition-fast), transform var(--transition-fast); align-self: flex-start; }
+  .btn-submit:hover:not(:disabled) { background-color: var(--color-accent-hover); transform: translateY(-1px); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 </style>
