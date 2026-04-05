@@ -379,6 +379,37 @@ Timer (cada 5 min) → expira tickets vencidos → Container Apps a 0
 
 ---
 
+## Fase 9 — Deploy + CI/CD (2026-04-05)
+
+### Lo construido
+
+- `.github/workflows/deploy.yml`: workflow de GitHub Actions con dos jobs:
+  - `build_and_deploy`: se dispara en push a `main` y en PRs → instala deps, build Astro, despliega con `Azure/static-web-apps-deploy@v1` (incluye `api/` como Azure Functions)
+  - `close_pull_request`: limpia staging environments cuando se cierra un PR
+  - `skip_app_build: true` — el build lo hacemos nosotros para tener control de las env vars
+  - Todos los secrets pasados como env vars al deploy action
+- `infrastructure/main.bicep`: plantilla Bicep que crea:
+  - Azure Static Web App (Free tier, linked al repo GitHub)
+  - Storage Account con tabla `demotickets` pre-creada
+  - Azure Communication Services
+- `infrastructure/main.bicepparam`: parámetros de producción
+- `docs/Deploy.md`: guía completa paso a paso (10 pasos desde `az login` hasta verificación post-deploy)
+  - Incluye tabla de todos los GitHub Secrets necesarios y cómo obtener cada uno
+  - Comandos de verificación post-deploy
+  - Checklist manual
+
+### Headers de seguridad
+
+Ya configurados en `staticwebapp.config.json` (Fase 8):
+- `Content-Security-Policy`: restrictivo, permite solo recursos conocidos
+- `X-Content-Type-Options: nosniff`
+- `X-Frame-Options: DENY`
+- `X-XSS-Protection: 1; mode=block`
+- `Referrer-Policy: strict-origin-when-cross-origin`
+- `Permissions-Policy`: deshabilita cámara, micrófono, geolocalización
+
+---
+
 ## Pendiente (próximas fases)
 
 | Fase | Contenido |
@@ -386,8 +417,47 @@ Timer (cada 5 min) → expira tickets vencidos → Container Apps a 0
 | ~~**6**~~ | ~~SEO: sitemap, robots.txt, Open Graph images, hreflang~~ ✓ |
 | ~~**7**~~ | ~~Backend FastAPI: demo on-demand + formulario de contacto (Azure Functions)~~ ✓ |
 | ~~**8**~~ | ~~Autenticación: Microsoft Entra ID para Keystatic admin en producción~~ ✓ |
-| **9** | Deploy: Azure Static Web Apps + CI/CD GitHub Actions + headers de seguridad |
-| **Migración** | Importar posts del blog actual de WordPress |
+| ~~**9**~~ | ~~Deploy: Azure Static Web Apps + CI/CD GitHub Actions + headers de seguridad~~ ✓ |
+| ~~**Migración**~~ | ~~Importar posts del blog actual de WordPress~~ ✓ |
+
+## Migración de WordPress (2026-04-05)
+
+### Script `scripts/migrate_wordpress.py`
+
+Migración automática de posts de WordPress → Markdown compatible con Astro Content Collections.
+
+**Qué hace:**
+1. Parsea el XML de exportación de WordPress (`Tools → Export → All content`)
+2. Extrae posts publicados (ignora drafts, páginas, adjuntos)
+3. Convierte HTML → Markdown (limpiando shortcodes de WordPress)
+4. Descarga imágenes de WordPress y las sube a Cloudflare R2
+5. Reemplaza URLs de imágenes en el Markdown (WordPress → R2)
+6. Resuelve la imagen destacada (featured image) via `_thumbnail_id` en postmeta
+7. Genera frontmatter compatible con el schema de Astro: `title`, `description`, `publishDate`, `tags`, `coverImage`, `lang`, `draft`
+8. Escribe archivos `.md` en `src/content/blog-en/` o `blog-es/`
+
+**Uso:**
+```bash
+# Instalar dependencias
+pip install -r scripts/requirements-migrate.txt
+
+# Dry run (sin uploads, sin escritura de archivos)
+python scripts/migrate_wordpress.py --xml export.xml --dry-run
+
+# Migración completa
+python scripts/migrate_wordpress.py \
+  --xml export.xml \
+  --r2-account-id TU_ACCOUNT_ID \
+  --r2-access-key TU_ACCESS_KEY \
+  --r2-secret-key TU_SECRET_KEY \
+  --r2-bucket alexisalulema-media \
+  --r2-public-url https://images.alexisalulema.com \
+  --lang en \
+  --out-dir src/content/blog-en
+
+# Sin migrar imágenes (útil si las imágenes ya están en R2)
+python scripts/migrate_wordpress.py --xml export.xml --skip-images
+```
 
 ---
 
