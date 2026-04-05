@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Block Keystatic admin (excluded from prod build, but belt-and-suspenders)
+Disallow: /keystatic/
+
+Sitemap: https://alexisalulema.com/sitemap-index.xml

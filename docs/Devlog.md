@@ -242,8 +242,8 @@ SSH key: ~/.ssh/github (con config entry en ~/.ssh/config)
 
 ### Post-deploy
 
-- [ ] Verificar sitemap en `alexisalulema.com/sitemap-index.xml`
-- [ ] Verificar `robots.txt`
+- [ ] Verificar sitemap en `alexisalulema.com/sitemap-index.xml` (generado automáticamente en build)
+- [ ] Verificar `robots.txt` (en `public/robots.txt`, ya listo)
 - [ ] Probar formulario de contacto end-to-end
 - [ ] Probar flujo completo de solicitud de demo
 - [ ] Verificar toggle dark/light en móvil
@@ -252,11 +252,39 @@ SSH key: ~/.ssh/github (con config entry en ~/.ssh/config)
 
 ---
 
+## Fase 6 — SEO (2026-04-03)
+
+### Decisiones
+
+| Decisión | Por qué |
+|---|---|
+| **`@astrojs/sitemap`** con filtro | Genera `sitemap-index.xml` automáticamente en build. Filtro excluye rutas `/keystatic` |
+| **hreflang dinámico** en BaseLayout | Se calcula la URL alternativa desde `Astro.url.pathname` — funciona para todas las páginas sin configuración extra |
+| **OG image SVG** (`og-default.svg`) | Generado en SVG para tener un fallback inmediato. Reemplazable por PNG real cuando el sitio esté en producción |
+| **`robots.txt`** con `Disallow: /keystatic/` | Belt-and-suspenders aunque Keystatic ya está excluido del build de producción |
+
+### Lo construido
+
+- `@astrojs/sitemap` instalado (`--legacy-peer-deps`) y configurado en `astro.config.mjs`
+  - Filtro para excluir rutas `/keystatic`
+  - Genera `sitemap-index.xml` + `sitemap-0.xml` con las 22 páginas del sitio (EN + ES)
+- `public/robots.txt`: `Allow: /`, `Disallow: /keystatic/`, apunta al sitemap
+- `hreflang` en `BaseLayout.astro`: `<link rel="alternate">` para EN, ES y `x-default`
+  - URL calculada dinámicamente desde `Astro.url.pathname`
+- `public/images/og-default.svg`: imagen OG branded (1200×630) con nombre, tagline y colores del sitio
+- `BaseLayout.astro` actualizado: `ogImage` default apunta a `/images/og-default.svg`
+
+### Problemas encontrados
+
+- **`@astrojs/sitemap` peer deps conflict con Astro 6**: Resuelto con `--legacy-peer-deps` (patrón recurrente).
+
+---
+
 ## Pendiente (próximas fases)
 
 | Fase | Contenido |
 |---|---|
-| **6** | SEO: sitemap, robots.txt, Open Graph images, hreflang |
+| ~~**6**~~ | ~~SEO: sitemap, robots.txt, Open Graph images, hreflang~~ ✓ |
 | **7** | Backend FastAPI: demo on-demand + formulario de contacto (Azure Functions) |
 | **8** | Autenticación: Microsoft Entra ID para Keystatic admin en producción |
 | **9** | Deploy: Azure Static Web Apps + CI/CD GitHub Actions + headers de seguridad |
