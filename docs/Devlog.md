@@ -333,13 +333,59 @@ Timer (cada 5 min) → expira tickets vencidos → Container Apps a 0
 
 ---
 
+## Fase 8 — Autenticación Keystatic (2026-04-05)
+
+### Decisiones
+
+| Decisión | Por qué |
+|---|---|
+| **Dos capas de autenticación** | Capa 1: Azure SWA + Entra ID protege la ruta `/keystatic*` a nivel de infraestructura. Capa 2: Keystatic GitHub OAuth permite al CMS hacer commits al repo. |
+| **`staticwebapp.config.json`** en la raíz | Azure SWA lo lee automáticamente en el deploy. Centraliza rutas, headers de seguridad y config de auth. |
+| **Redirección automática** a login | El `responseOverrides.401` redirige a `/.auth/login/aad` automáticamente — el admin no necesita saber la URL. |
+| **Security headers** en `globalHeaders` | CSP, X-Frame-Options, X-Content-Type-Options, etc. configurados a nivel de infraestructura, no en código. |
+| **`KEYSTATIC_GITHUB_CLIENT_ID` como feature flag** | Si no está configurado, Keystatic se excluye del build de producción. Permite hacer deploy antes de tener el OAuth App de GitHub listo. |
+
+### Lo construido
+
+- `staticwebapp.config.json`:
+  - Ruta `/keystatic*` requiere rol `admin`
+  - Ruta `/.auth/login/aad` accesible para `anonymous` (es el endpoint de login)
+  - `responseOverrides.401`: redirige automáticamente al login de Microsoft
+  - `globalHeaders`: CSP completo + headers de seguridad estándar
+  - `navigationFallback`: rewrite a `/index.html` para SPA (excluye assets estáticos)
+- `keystatic.config.ts` actualizado:
+  - `storage.kind: 'github'` en producción (repo `alulema/personal-website`)
+  - `storage.kind: 'local'` en desarrollo — sin cambios en el workflow local
+- `astro.config.mjs` actualizado:
+  - Keystatic incluido en producción solo si `KEYSTATIC_GITHUB_CLIENT_ID` está definido
+- `.env.example` actualizado con `KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`, `KEYSTATIC_SECRET`
+
+### Pasos manuales requeridos (antes del deploy)
+
+1. **GitHub OAuth App** → github.com/settings/developers → New OAuth App:
+   - Homepage URL: `https://alexisalulema.com`
+   - Callback URL: `https://alexisalulema.com/api/keystatic/github/oauth/callback`
+   - Copiar Client ID y Client Secret a variables de entorno en Azure SWA
+
+2. **Rol `admin` en Azure SWA** → Azure Portal → Static Web App → Role management:
+   - Agregar invitación para `contact@alexisalulema.com`
+   - Provider: Microsoft Entra ID (`aad`)
+   - Rol: `admin`
+
+3. **Variables en Azure SWA** → Configuration → Application settings:
+   - `KEYSTATIC_GITHUB_CLIENT_ID`
+   - `KEYSTATIC_GITHUB_CLIENT_SECRET`
+   - `KEYSTATIC_SECRET`
+
+---
+
 ## Pendiente (próximas fases)
 
 | Fase | Contenido |
 |---|---|
 | ~~**6**~~ | ~~SEO: sitemap, robots.txt, Open Graph images, hreflang~~ ✓ |
 | ~~**7**~~ | ~~Backend FastAPI: demo on-demand + formulario de contacto (Azure Functions)~~ ✓ |
-| **8** | Autenticación: Microsoft Entra ID para Keystatic admin en producción |
+| ~~**8**~~ | ~~Autenticación: Microsoft Entra ID para Keystatic admin en producción~~ ✓ |
 | **9** | Deploy: Azure Static Web Apps + CI/CD GitHub Actions + headers de seguridad |
 | **Migración** | Importar posts del blog actual de WordPress |
 

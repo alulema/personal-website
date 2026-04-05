@@ -1,0 +1,37 @@
+{
+  "routes": [
+    {
+      "route": "/keystatic*",
+      "allowedRoles": ["admin"]
+    },
+    {
+      "route": "/.auth/login/aad",
+      "allowedRoles": ["anonymous"]
+    },
+    {
+      "route": "/.auth/logout",
+      "allowedRoles": ["anonymous"]
+    }
+  ],
+  "responseOverrides": {
+    "401": {
+      "redirect": "/.auth/login/aad?post_login_redirect_uri=LOGIN_NONCE",
+      "statusCode": 302
+    }
+  },
+  "globalHeaders": {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "X-XSS-Protection": "1; mode=block",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+    "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.alexisalulema.com; connect-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com;"
+  },
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/images/*", "/fonts/*", "/*.{css,js,ico,png,svg,webp,woff,woff2}"]
+  },
+  "mimeTypes": {
+    ".json": "application/json"
+  }
+}

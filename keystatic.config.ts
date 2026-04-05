@@ -1,5 +1,17 @@
 import { config, collection, fields } from '@keystatic/core';
 
+// In production, use GitHub mode so Keystatic commits directly to the repo.
+// Requires KEYSTATIC_GITHUB_CLIENT_ID + KEYSTATIC_GITHUB_CLIENT_SECRET + KEYSTATIC_SECRET.
+// In local dev, 'local' mode writes to disk directly.
+const isProduction = import.meta.env.PROD;
+
+const storage = isProduction
+  ? ({
+      kind: 'github' as const,
+      repo: { owner: 'alulema', name: 'personal-website' },
+    })
+  : ({ kind: 'local' as const });
+
 const blogFields = {
   title: fields.text({ label: 'Title', validation: { isRequired: true } }),
   description: fields.text({
@@ -24,7 +36,7 @@ const blogFields = {
 };
 
 export default config({
-  storage: { kind: 'local' },
+  storage,
 
   collections: {
     'blog-en': collection({
